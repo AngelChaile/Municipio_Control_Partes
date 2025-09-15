@@ -4,13 +4,15 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBFuibt-wLnMGCqFHxH15JCRGsUXWvMPqA",
   authDomain: "municipio-control-partes.firebaseapp.com",
+  databaseURL: "https://municipio-control-partes-default-rtdb.firebaseio.com",
   projectId: "municipio-control-partes",
   storageBucket: "municipio-control-partes.firebasestorage.app",
   messagingSenderId: "892284199857",
-  appId: "1:892284199857:web:92ff9cc673b092e7ea5390"
+  appId: "1:892284199857:web:8800f5069e76830cea5390"
 };
 
 const app = initializeApp(firebaseConfig);
