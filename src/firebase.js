@@ -1,6 +1,6 @@
 // Replace the firebaseConfig object with your Firebase web app config.
 // You can find it in Firebase Console -> Project settings -> General -> Your apps (Web)
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
