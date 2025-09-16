@@ -1,46 +1,74 @@
-// /pages/index.js
-import { useEffect, useState } from "react";
-import { db } from "../lib/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { db, auth } from "./firebase";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, getDocs } from "firebase/firestore";
+import AreaList from "./components/AreaList";
+import SearchBar from "./components/SearchBar";
+import ResetButton from "./components/ResetButton";
 
-export default function Home() {
-  const [data, setData] = useState([]);
+export default function App() {
+  const [areas, setAreas] = useState([]);
+  const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "areas"));
-        const items = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setData(items);
-      } catch (error) {
-        console.error("Error al obtener datos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const q = query(collection(db, "areas"), orderBy("cod"));
+    const unsub = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      setAreas(docs);
+      setLoading(false);
+    }, (err) => {
+      console.error("Error fetching areas:", err);
+      setLoading(false);
+    });
 
-    fetchData();
+    return () => unsub();
   }, []);
 
-  if (loading) return <p>Cargando datos...</p>;
+  const toggleEnviado = async (area) => {
+    try {
+      const ref = doc(db, "areas", area.id);
+      await updateDoc(ref, {
+        enviado: !area.enviado,
+        updatedBy: auth.currentUser ? auth.currentUser.email : "anónimo",
+        updatedAt: new Date()
+      });
+    } catch (e) {
+      console.error(e);
+      alert("Error al actualizar. Revisa permisos de Firestore o tu conexión.");
+    }
+  };
+
+  const vaciarTodo = async () => {
+    if (!window.confirm("¿Vaciar todas las marcas? Esta acción es irreversible.")) return;
+    try {
+      const snap = await getDocs(collection(db, "areas"));
+      const batch = writeBatch(db);
+      snap.docs.forEach(d => batch.update(d.ref, { enviado: false, updatedBy: null, updatedAt: null }));
+      await batch.commit();
+    } catch (e) {
+      console.error(e);
+      alert("Error al vaciar. Revisa permisos.");
+    }
+  };
+
+  const filtered = areas.filter(a => {
+    if (!filter) return true;
+    return (a.nombre || "").toLowerCase().includes(filter.toLowerCase()) || (a.cod || "").includes(filter);
+  });
 
   return (
-    <div>
-      <h1>Datos desde Firebase Firestore</h1>
-      {data.length === 0 ? (
-        <p>No hay datos disponibles</p>
-      ) : (
-        <ul>
-          {data.map((item) => (
-            <li key={item.id}>
-              <strong>{item.nombre}</strong> - {item.descripcion}
-            </li>
-          ))}
-        </ul>
+    <div className="container">
+      <h1>Control de Partes — Municipio</h1>
+      <div className="controls">
+        <SearchBar value={filter} onChange={setFilter} />
+        <ResetButton onReset={vaciarTodo} />
+      </div>
+
+      {loading ? <p>Cargando...</p> : (
+        <>
+          <AreaList areas={filtered} onToggle={toggleEnviado} />
+          <p style={{marginTop:12}}><em>Nota: los cambios se sincronizan en tiempo real entre usuarios conectados.</em></p>
+        </>
       )}
     </div>
   );
