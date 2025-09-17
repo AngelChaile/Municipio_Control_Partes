@@ -23,7 +23,7 @@ export default function AreaList({ areas, onToggle }) {
             </td>
             <td>
               {area.updatedAt ? (area.updatedAt.seconds ? new Date(area.updatedAt.seconds * 1000).toLocaleString() : new Date(area.updatedAt).toLocaleString()) : "—"}
-              <div style={{fontSize:12, color:"#e60c0cff"}}>{area.updatedBy || ""}</div>
+              <div style={{fontSize:12, color:"#444"}}>{area.updatedBy || ""}</div>
             </td>
           </tr>
         ))}
