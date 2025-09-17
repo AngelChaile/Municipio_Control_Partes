@@ -74,17 +74,7 @@ export default function App() {
             <h1>Sistema de Control de Partes Diarios</h1>
             <div class="date-display" id="currentDate"></div>
           </div>
-          <div>
-            <div class="status-indicator">
-              <div class="status-dot" id="connectionStatus"></div>
-              <span id="connectionText">Conectando...</span>
-            </div>
-            <div class="user-info">
-              <div class="user-avatar" id="userAvatar"></div>
-              <span id="userName"></span>
-              <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
-            </div>
-          </div>
+          <img src="/favicon.png" alt="Logo Municipio" class="logo" />
         </div>
       </header>
       {/* <h1 style={{ marginTop: "20px" }}>Control de Partes — Municipio</h1> */}
