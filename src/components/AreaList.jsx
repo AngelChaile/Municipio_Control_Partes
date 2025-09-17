@@ -14,7 +14,7 @@ export default function AreaList({ areas, onToggle }) {
       </thead>
       <tbody>
         {areas.map(area => (
-          <tr key={area.id} className={area.enviado ? "green" : ""}>
+          <tr key={area.id} className={area.enviado ? "red" : ""}>
             <td>{area.cod}</td>
             <td>{area.nombre}</td>
             <td>{area.nivel}</td>
