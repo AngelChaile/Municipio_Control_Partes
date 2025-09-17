@@ -45,6 +45,40 @@ export default function App() {
   };
 
   const vaciarTodo = async () => {
+  // Accedes a Swal desde el global window
+  const result = await window.Swal.fire({
+    title: '¿Vaciar todas las marcas?',
+    text: "Esta acción es irreversible.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ff4757',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Sí, vaciar todo',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: 'custom-swal'
+    }
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const snap = await getDocs(collection(db, "areas"));
+    const batch = writeBatch(db);
+    snap.docs.forEach((d) => batch.update(d.ref, { 
+      enviado: false, 
+      updatedBy: null, 
+      updatedAt: null 
+    }));
+    await batch.commit();
+    
+    window.Swal.fire('¡Éxito!', 'Las marcas se vaciaron correctamente', 'success');
+  } catch (e) {
+    console.error(e);
+    window.Swal.fire('Error', 'Error al vaciar. Revisa permisos.', 'error');
+  }
+};
+  /*const vaciarTodo = async () => {
     if (!window.confirm("¿Vaciar todas las marcas? Esta acción es irreversible.")) return;
     try {
       const snap = await getDocs(collection(db, "areas"));
@@ -55,7 +89,7 @@ export default function App() {
       console.error(e);
       alert("Error al vaciar. Revisa permisos.");
     }
-  };
+  };*/
 
   const filtered = areas.filter((a) => {
     if (!filter) return true;
