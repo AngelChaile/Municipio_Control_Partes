@@ -5,7 +5,7 @@ import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, get
 import AreaList from "./components/AreaList";
 import SearchBar from "./components/SearchBar";
 import ResetButton from "./components/ResetButton";
-import Dashboard from "./components/Dashboard"; // <- agregamos el Dashboard
+import Dashboard from "./components/Dashboard"; 
 
 export default function App() {
   const [areas, setAreas] = useState([]);
@@ -45,7 +45,7 @@ export default function App() {
   };
 
   const vaciarTodo = async () => {
-  // Accedes a Swal desde el global window
+  // Acceder a Swal desde el global window
   const result = await window.Swal.fire({
     title: '¿Vaciar todas las marcas?',
     text: "Esta acción es irreversible.",
@@ -108,7 +108,7 @@ export default function App() {
             <h1>Sistema de Control de Partes Diarios</h1>
             <div class="date-display" id="currentDate"></div>
           </div>
-          <img src="/favicon.png" alt="Logo Municipio" class="logo" />
+          <img src="/../favicon.png" alt="Logo Municipio" class="logo" />
         </div>
       </header>
       {/* <h1 style={{ marginTop: "20px" }}>Control de Partes — Municipio</h1> */}

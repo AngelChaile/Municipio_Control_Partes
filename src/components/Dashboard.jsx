@@ -41,7 +41,7 @@ export default function Dashboard({ areas }) {
       </div>
 
       <div className="chart">
-        <ResponsiveContainer width="100%" height={150}>
+        <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie
               data={data}
