@@ -108,7 +108,7 @@ export default function App() {
             <h1>Sistema de Control de Partes Diarios</h1>
             <div class="date-display" id="currentDate"></div>
           </div>
-          <img src="/../favicon.png" alt="Logo Municipio" class="logo" />
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" alt="Logo Municipio" class="logo" />
         </div>
       </header>
       {/* <h1 style={{ marginTop: "20px" }}>Control de Partes — Municipio</h1> */}

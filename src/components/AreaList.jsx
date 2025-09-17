@@ -14,7 +14,7 @@ export default function AreaList({ areas, onToggle }) {
       </thead>
       <tbody>
         {areas.map(area => (
-          <tr key={area.id} className={area.enviado ? "red" : ""}>
+          <tr key={area.id} className={area.enviado ? "green" : "red"}>
             <td>{area.cod}</td>
             <td>{area.nombre}</td>
             <td>{area.nivel}</td>
@@ -23,7 +23,7 @@ export default function AreaList({ areas, onToggle }) {
             </td>
             <td>
               {area.updatedAt ? (area.updatedAt.seconds ? new Date(area.updatedAt.seconds * 1000).toLocaleString() : new Date(area.updatedAt).toLocaleString()) : "—"}
-              <div style={{fontSize:12, color:"#444"}}>{area.updatedBy || ""}</div>
+              <div style={{fontSize:12, color:"#e60c0cff"}}>{area.updatedBy || ""}</div>
             </td>
           </tr>
         ))}
