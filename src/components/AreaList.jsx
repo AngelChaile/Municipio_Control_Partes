@@ -16,9 +16,9 @@ export default function AreaList({ areas, onToggle }) {
       <table>
         <thead>
           <tr>
-            <th>Código</th>
+            {/* <th>Código</th> */}
             <th>Área</th>
-            <th>Nivel</th>
+             {/* <th>Nivel</th>  */}
             <th>Estado</th>
             <th>Última Actualización</th>
           </tr>
@@ -26,7 +26,7 @@ export default function AreaList({ areas, onToggle }) {
         <tbody>
           {areas.map(area => (
             <tr key={area.id}>
-              <td>
+{/* <td>
                 <span style={{ 
                   fontFamily: 'monospace', 
                   fontWeight: '600', 
@@ -34,9 +34,9 @@ export default function AreaList({ areas, onToggle }) {
                 }}>
                   {area.cod}
                 </span>
-              </td>
+              </td> */}
               <td>{area.nombre}</td>
-              <td>{area.nivel}</td>
+              {/* <td>{area.nivel}</td> */}
               <td>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <input 
