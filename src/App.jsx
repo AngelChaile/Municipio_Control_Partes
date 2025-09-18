@@ -119,10 +119,10 @@ export default function App() {
       <header className="app-header">
         <div className="header-content">
           <div className="header-text">
-            <h1></h1>
+            <h1>Sistema de Control de Partes Diarios</h1>
             <p className="subtitle">Municipalidad - Gestión de áreas</p>
           </div>
-          <div>Sistema de Control de Partes Diarios
+          <div>
             <img 
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" 
               alt="Logo Municipio" 
