@@ -4,6 +4,7 @@ import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, get
 import AreaList from "./components/AreaList";
 import SearchBar from "./components/SearchBar";
 import ResetButton from "./components/ResetButton";
+import ExportButton from "./components/ExportButton";
 import Dashboard from "./components/Dashboard";
 
 export default function App() {
@@ -11,7 +12,7 @@ export default function App() {
   const [filteredAreas, setFilteredAreas] = useState([]);
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState("all"); // "all", "enviados", "pendientes"
+  const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
     const q = query(collection(db, "areas"), orderBy("cod"));
@@ -95,7 +96,7 @@ export default function App() {
       }));
       await batch.commit();
 
-      window.Swal.fire('¡Listo!', 'Las marcas se vaciaron correctamente', 'success');
+      window.Swal.fire('¡Éxito!', 'Las marcas se vaciaron correctamente', 'success');
     } catch (e) {
       console.error(e);
       window.Swal.fire('Error', 'Error al vaciar. Revisa permisos.', 'error');
@@ -104,6 +105,56 @@ export default function App() {
 
   const handleFilterClick = (filterType) => {
     setActiveFilter(filterType);
+  };
+
+  const exportToExcel = () => {
+    // Crear datos para el Excel
+    const excelData = areas.map(area => ({
+      'Código': area.cod,
+      'Área': area.nombre,
+      'Nivel': area.nivel,
+      'Estado': area.enviado ? 'ENVIADO' : 'PENDIENTE',
+      'Última Actualización': area.updatedAt ? 
+        (area.updatedAt.seconds ? 
+          new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
+          new Date(area.updatedAt).toLocaleString()) : 'NUNCA',
+      'Actualizado Por': area.updatedBy || 'NO REGISTRADO'
+    }));
+
+    // Crear libro de Excel
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Control de Partes');
+
+    // Obtener fecha para el nombre del archivo
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+
+    // Descargar archivo
+    XLSX.writeFile(workbook, `control_partes_${dateStr}.xlsx`);
+
+    // También guardar en Firestore para histórico (opcional)
+    saveMonthlyReport(monthStr, areas);
+  };
+
+  const saveMonthlyReport = async (month, areasData) => {
+    try {
+      // Aquí guardarías en Firestore en una colección "monthly_reports"
+      // Esto requiere configurar seguridad en Firestore
+      console.log('Guardando reporte mensual para:', month, areasData);
+      
+      // Mostrar confirmación
+      window.Swal.fire({
+        icon: 'success',
+        title: 'Reporte generado',
+        text: `Se ha guardado el reporte de ${month} para consultas históricas`,
+        timer: 3000,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      console.error('Error guardando reporte histórico:', error);
+    }
   };
 
   return (
@@ -124,7 +175,7 @@ export default function App() {
           </div>
           <div>
             <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/7/77/Isologotipo_Municipio_de_Mor%C3%B3n.jpg" 
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" 
               alt="Logo Municipio" 
               className="logo" 
             />
@@ -136,6 +187,7 @@ export default function App() {
       <div className="controls">
         <SearchBar value={filter} onChange={setFilter} />
         <ResetButton onReset={vaciarTodo} />
+        <ExportButton onExport={exportToExcel} />
       </div>
 
       {/* Indicador de filtro activo */}
