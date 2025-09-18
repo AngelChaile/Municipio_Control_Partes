@@ -33,18 +33,37 @@ body {
 }
 
 /* Header Styles */
+/* Reemplazar los estilos del header existentes */
 .app-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: white;
   padding: 16px 24px;
   border-radius: 12px;
   margin-bottom: 24px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 15px rgba(220, 38, 38, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
+.app-header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+  transform: rotate(45deg);
+  animation: shine 8s infinite linear;
+}
+
+@keyframes shine {
+  0% { right: -50%; }
+  100% { right: 150%; }
+}
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -114,19 +133,20 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
+/* Ajustar colores de las tarjetas para que combinen */
 .stat-card.enviados {
-  --card-color: #10b981;
-  --card-color-light: #34d399;
+  --card-color: #16a34a;
+  --card-color-light: #22c55e;
 }
 
 .stat-card.pendientes {
-  --card-color: #f59e0b;
-  --card-color-light: #fbbf24;
+  --card-color: #ea580c;
+  --card-color-light: #f97316;
 }
 
 .stat-card.total {
-  --card-color: #4f46e5;
-  --card-color-light: #6366f1;
+  --card-color: #dc2626;
+  --card-color-light: #ef4444;
 }
 
 .stat-card h3 {
@@ -220,12 +240,13 @@ button {
 }
 
 button.reset {
-  background: var(--danger-color);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: white;
 }
 
 button.reset:hover {
-  background: #dc2626;
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  transform: translateY(-2px);
 }
 
 button.export {
