@@ -35,9 +35,11 @@ body {
 /* Header Styles */
 /* Reemplazar los estilos del header existentes */
 .app-header {
-  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #ef4444 100%);
+  background: 
+    linear-gradient(135deg, #dc2626 0%, #b91c1c 100%),
+    repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px);
   color: white;
-  padding: 20px 24px;
+  padding: 16px 24px;
   border-radius: 12px;
   margin-bottom: 24px;
   box-shadow: 0 10px 15px rgba(220, 38, 38, 0.2);
@@ -45,20 +47,8 @@ body {
   justify-content: space-between;
   align-items: center;
   position: relative;
+  overflow: hidden;
 }
-
-.app-header::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #f3f4f6, #9ca3af, #f3f4f6);
-}
-
-
-
 
 .header-content {
   display: flex;
