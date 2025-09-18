@@ -109,17 +109,15 @@ export default function App() {
 
   const exportToExcel = () => {
     // Crear datos para el Excel
-    const excelData = areas.map(area => ({
-      'Código': area.cod,
-      'Área': area.nombre,
-      'Nivel': area.nivel,
-      'Estado': area.enviado ? 'ENVIADO' : 'PENDIENTE',
-      'Última Actualización': area.updatedAt ? 
-        (area.updatedAt.seconds ? 
-          new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
-          new Date(area.updatedAt).toLocaleString()) : 'NUNCA',
-      'Actualizado Por': area.updatedBy || 'NO REGISTRADO'
-    }));
+ const excelData = areas.map(area => ({
+    'Área': area.nombre,
+    'Estado': area.enviado ? 'ENVIADO' : 'PENDIENTE',
+    'Última Actualización': area.updatedAt ? 
+      (area.updatedAt.seconds ? 
+        new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
+        new Date(area.updatedAt).toLocaleString()) : 'NUNCA',
+    'Actualizado Por': area.updatedBy || 'NO REGISTRADO'
+  }));
 
     // Crear libro de Excel
     const worksheet = XLSX.utils.json_to_sheet(excelData);

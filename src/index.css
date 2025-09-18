@@ -311,10 +311,20 @@ button.export:hover {
   overflow-x: auto;
 }
 
+/* Ajustar tabla con menos columnas */
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
+  min-width: 500px; /* Reducir el mínimo */
+}
+
+th:nth-child(1) { width: 40%; } /* Área */
+th:nth-child(2) { width: 20%; } /* Estado */
+th:nth-child(3) { width: 40%; } /* Última Actualización */
+
+/* Mejorar visualización de información */
+td:first-child {
+  font-weight: 500;
 }
 
 th {
