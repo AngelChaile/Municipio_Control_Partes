@@ -39,14 +39,17 @@ export default function Dashboard({ areas }) {
       <h2>Resumen de Estado</h2>
       <div className="stats-grid">
         <div className="stat-card enviados">
+          <i className="fas fa-check-circle"></i>
           <h3>Enviados</h3>
           <p>{enviados}</p>
         </div>
         <div className="stat-card pendientes">
+          <i className="fas fa-clock"></i>
           <h3>Pendientes</h3>
           <p>{pendientes}</p>
         </div>
         <div className="stat-card total">
+          <i className="fas fa-layer-group"></i>
           <h3>Total Áreas</h3>
           <p>{areas.length}</p>
         </div>

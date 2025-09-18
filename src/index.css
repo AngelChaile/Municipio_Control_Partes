@@ -86,55 +86,72 @@ body {
   color: var(--dark-color);
 }
 
+/* Stats Cards - Rediseñadas */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
 .stat-card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
+  background: linear-gradient(135deg, var(--card-color, #4f46e5) 0%, var(--card-color-light, #6366f1) 100%);
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
   box-shadow: var(--shadow);
-  border-left: 4px solid;
+  color: white;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
 }
 
 .stat-card.enviados {
-  border-left-color: var(--success-color);
+  --card-color: #10b981;
+  --card-color-light: #34d399;
 }
 
 .stat-card.pendientes {
-  border-left-color: var(--warning-color);
+  --card-color: #f59e0b;
+  --card-color-light: #fbbf24;
 }
 
 .stat-card.total {
-  border-left-color: var(--primary-color);
+  --card-color: #4f46e5;
+  --card-color-light: #6366f1;
 }
 
 .stat-card h3 {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
   margin: 0 0 8px 0;
-  color: var(--gray-color);
+  opacity: 0.9;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .stat-card p {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
-  color: var(--dark-color);
 }
+
+/* Iconos en las tarjetas */
+.stat-card i {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+
 
 .chart-container {
   background: white;

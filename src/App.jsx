@@ -70,7 +70,7 @@ export default function App() {
       }));
       await batch.commit();
 
-      window.Swal.fire('¡Éxito!', 'Las marcas se vaciaron correctamente', 'success');
+      window.Swal.fire('¡Listo!', 'Las marcas se vaciaron correctamente', 'success');
     } catch (e) {
       console.error(e);
       window.Swal.fire('Error', 'Error al vaciar. Revisa permisos.', 'error');
