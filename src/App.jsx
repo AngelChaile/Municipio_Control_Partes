@@ -124,7 +124,7 @@ export default function App() {
           </div>
           <div>
             <img 
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" 
+              src="https://upload.wikimedia.org/wikipedia/commons/7/77/Isologotipo_Municipio_de_Mor%C3%B3n.jpg" 
               alt="Logo Municipio" 
               className="logo" 
             />
