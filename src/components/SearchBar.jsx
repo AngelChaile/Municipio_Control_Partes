@@ -2,6 +2,14 @@ import React from "react";
 
 export default function SearchBar({ value, onChange }) {
   return (
-    <input className="search" placeholder="Buscar por nombre o cod..." value={value} onChange={e => onChange(e.target.value)} />
+    <div className="search-container">
+      <i className="fas fa-search"></i>
+      <input 
+        className="search" 
+        placeholder="Buscar por nombre o código..." 
+        value={value} 
+        onChange={e => onChange(e.target.value)} 
+      />
+    </div>
   );
 }

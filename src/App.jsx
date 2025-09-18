@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useEffect, useState } from "react";
 import { db, auth } from "./firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, getDocs } from "firebase/firestore";
@@ -40,19 +39,18 @@ export default function App() {
       });
     } catch (e) {
       console.error(e);
-      alert("Error al actualizar. Revisa permisos de Firestore o tu conexión.");
+      window.Swal.fire('Error', 'Error al actualizar. Revisa permisos de Firestore o tu conexión.', 'error');
     }
   };
 
   const vaciarTodo = async () => {
-    // Acceder a Swal desde el global window
     const result = await window.Swal.fire({
       title: '¿Vaciar todas las marcas?',
       text: "Esta acción es irreversible.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#ff4757',
-      cancelButtonColor: '#6c757d',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
       confirmButtonText: 'Sí, vaciar todo',
       cancelButtonText: 'Cancelar',
       customClass: {
@@ -78,18 +76,6 @@ export default function App() {
       window.Swal.fire('Error', 'Error al vaciar. Revisa permisos.', 'error');
     }
   };
-  /*const vaciarTodo = async () => {
-    if (!window.confirm("¿Vaciar todas las marcas? Esta acción es irreversible.")) return;
-    try {
-      const snap = await getDocs(collection(db, "areas"));
-      const batch = writeBatch(db);
-      snap.docs.forEach((d) => batch.update(d.ref, { enviado: false, updatedBy: null, updatedAt: null }));
-      await batch.commit();
-    } catch (e) {
-      console.error(e);
-      alert("Error al vaciar. Revisa permisos.");
-    }
-  };*/
 
   const filtered = areas.filter((a) => {
     if (!filter) return true;
@@ -101,31 +87,39 @@ export default function App() {
       {/* Dashboard con estadísticas */}
       <Dashboard areas={areas} />
 
-      {/* Lista de Áreas */}
-      <header>
-        <div class="header-content">
-          <div>
+      {/* Header */}
+      <header className="app-header">
+        <div className="header-content">
+          <div className="header-text">
             <h1>Sistema de Control de Partes Diarios</h1>
-            <div class="date-display" id="currentDate"></div>
+            <p className="subtitle">Municipalidad - Gestión de áreas</p>
           </div>
           <div>
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" alt="Logo Municipio" class="logo" />
+            <img 
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" 
+              alt="Logo Municipio" 
+              className="logo" 
+            />
           </div>
         </div>
       </header>
-      {/* <h1 style={{ marginTop: "20px" }}>Control de Partes — Municipio</h1> */}
+
+      {/* Controles de búsqueda y acciones */}
       <div className="controls">
         <SearchBar value={filter} onChange={setFilter} />
         <ResetButton onReset={vaciarTodo} />
       </div>
 
       {loading ? (
-        <p>Cargando...</p>
+        <div className="loading">
+          <i className="fas fa-spinner fa-spin"></i>
+          <p>Cargando áreas...</p>
+        </div>
       ) : (
         <>
           <AreaList areas={filtered} onToggle={toggleEnviado} />
-          <p style={{ marginTop: 12 }}>
-            <em>Nota: los cambios se sincronizan en tiempo real entre usuarios conectados.</em>
+          <p className="note">
+            Los cambios se sincronizan en tiempo real entre usuarios conectados.
           </p>
         </>
       )}
