@@ -8,8 +8,10 @@ import Dashboard from "./components/Dashboard";
 
 export default function App() {
   const [areas, setAreas] = useState([]);
+  const [filteredAreas, setFilteredAreas] = useState([]);
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState("all"); // "all", "enviados", "pendientes"
 
   useEffect(() => {
     const q = query(collection(db, "areas"), orderBy("cod"));
@@ -18,6 +20,7 @@ export default function App() {
       (snapshot) => {
         const docs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
         setAreas(docs);
+        applyFilters(docs, filter, activeFilter);
         setLoading(false);
       },
       (err) => {
@@ -28,6 +31,28 @@ export default function App() {
 
     return () => unsub();
   }, []);
+
+  useEffect(() => {
+    applyFilters(areas, filter, activeFilter);
+  }, [filter, activeFilter, areas]);
+
+  const applyFilters = (areasList, searchFilter, statusFilter) => {
+    let result = areasList.filter((a) => {
+      // Filtro de búsqueda
+      if (searchFilter && !(a.nombre || "").toLowerCase().includes(searchFilter.toLowerCase()) && 
+          !(a.cod || "").includes(searchFilter)) {
+        return false;
+      }
+      
+      // Filtro de estado
+      if (statusFilter === "enviados") return a.enviado;
+      if (statusFilter === "pendientes") return !a.enviado;
+      
+      return true;
+    });
+    
+    setFilteredAreas(result);
+  };
 
   const toggleEnviado = async (area) => {
     try {
@@ -70,22 +95,25 @@ export default function App() {
       }));
       await batch.commit();
 
-      window.Swal.fire('¡Listo!', 'Las marcas se vaciaron correctamente', 'success');
+      window.Swal.fire('¡Éxito!', 'Las marcas se vaciaron correctamente', 'success');
     } catch (e) {
       console.error(e);
       window.Swal.fire('Error', 'Error al vaciar. Revisa permisos.', 'error');
     }
   };
 
-  const filtered = areas.filter((a) => {
-    if (!filter) return true;
-    return (a.nombre || "").toLowerCase().includes(filter.toLowerCase()) || (a.cod || "").includes(filter);
-  });
+  const handleFilterClick = (filterType) => {
+    setActiveFilter(filterType);
+  };
 
   return (
     <div className="container">
       {/* Dashboard con estadísticas */}
-      <Dashboard areas={areas} />
+      <Dashboard 
+        areas={areas} 
+        activeFilter={activeFilter}
+        onFilterClick={handleFilterClick}
+      />
 
       {/* Header */}
       <header className="app-header">
@@ -110,6 +138,21 @@ export default function App() {
         <ResetButton onReset={vaciarTodo} />
       </div>
 
+      {/* Indicador de filtro activo */}
+      {activeFilter !== "all" && (
+        <div className="filter-indicator">
+          <span>
+            Mostrando {activeFilter === "enviados" ? "áreas enviadas" : "áreas pendientes"}
+            <button 
+              onClick={() => setActiveFilter("all")}
+              className="clear-filter"
+            >
+              <i className="fas fa-times"></i> Mostrar todas
+            </button>
+          </span>
+        </div>
+      )}
+
       {loading ? (
         <div className="loading">
           <i className="fas fa-spinner fa-spin"></i>
@@ -117,9 +160,10 @@ export default function App() {
         </div>
       ) : (
         <>
-          <AreaList areas={filtered} onToggle={toggleEnviado} />
+          <AreaList areas={filteredAreas} onToggle={toggleEnviado} />
           <p className="note">
-            Los cambios se sincronizan en tiempo real entre usuarios conectados.
+            {filteredAreas.length} {filteredAreas.length === 1 ? 'área encontrada' : 'áreas encontradas'}
+            {activeFilter !== "all" && ` (filtrado por ${activeFilter})`}
           </p>
         </>
       )}

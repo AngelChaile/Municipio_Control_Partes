@@ -5,7 +5,7 @@ export default function AreaList({ areas, onToggle }) {
     return (
       <div className="table-container">
         <p style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>
-          No se encontraron áreas que coincidan con la búsqueda.
+          No se encontraron áreas que coincidan con los criterios de búsqueda.
         </p>
       </div>
     );
