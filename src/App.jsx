@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { db, auth } from "./firebase";
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, getDocs } from "firebase/firestore";
 import AreaList from "./components/AreaList";
@@ -46,8 +46,8 @@ export default function App() {
       }
       
       // Filtro de estado
-      if (statusFilter === "enviados") return a.enviado;
-      if (statusFilter === "pendientes") return !a.enviado;
+      if (statusFilter === "recibidos") return a.recibido;
+      if (statusFilter === "pendientes") return !a.recibido;
       
       return true;
     });
@@ -55,11 +55,11 @@ export default function App() {
     setFilteredAreas(result);
   };
 
-  const toggleEnviado = async (area) => {
+  const togglerecibido = async (area) => {
     try {
       const ref = doc(db, "areas", area.id);
       await updateDoc(ref, {
-        enviado: !area.enviado,
+        recibido: !area.recibido,
         updatedBy: auth.currentUser ? auth.currentUser.email : "anónimo",
         updatedAt: new Date(),
       });
@@ -90,13 +90,13 @@ export default function App() {
       const snap = await getDocs(collection(db, "areas"));
       const batch = writeBatch(db);
       snap.docs.forEach((d) => batch.update(d.ref, {
-        enviado: false,
+        recibido: false,
         updatedBy: null,
         updatedAt: null
       }));
       await batch.commit();
 
-      window.Swal.fire('¡Éxito!', 'Las marcas se vaciaron correctamente', 'success');
+      window.Swal.fire('¡Listo!', 'Las marcas se vaciaron correctamente', 'success');
     } catch (e) {
       console.error(e);
       window.Swal.fire('Error', 'Error al vaciar. Revisa permisos.', 'error');
@@ -111,7 +111,7 @@ export default function App() {
     // Crear datos para el Excel
  const excelData = areas.map(area => ({
     'Área': area.nombre,
-    'Estado': area.enviado ? 'ENVIADO' : 'PENDIENTE',
+    'Estado': area.recibido ? 'recibido' : 'PENDIENTE',
     'Última Actualización': area.updatedAt ? 
       (area.updatedAt.seconds ? 
         new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
@@ -173,7 +173,7 @@ export default function App() {
           </div>
           <div>
             <img 
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" 
+              src="https://upload.wikimedia.org/wikipedia/commons/7/77/Isologotipo_Municipio_de_Mor%C3%B3n.jpg" 
               alt="Logo Municipio" 
               className="logo" 
             />
@@ -192,7 +192,7 @@ export default function App() {
       {activeFilter !== "all" && (
         <div className="filter-indicator">
           <span>
-            Mostrando {activeFilter === "enviados" ? "áreas enviadas" : "áreas pendientes"}
+            Mostrando {activeFilter === "recibidos" ? "áreas enviadas" : "áreas pendientes"}
             <button 
               onClick={() => setActiveFilter("all")}
               className="clear-filter"
@@ -210,7 +210,7 @@ export default function App() {
         </div>
       ) : (
         <>
-          <AreaList areas={filteredAreas} onToggle={toggleEnviado} />
+          <AreaList areas={filteredAreas} onToggle={togglerecibido} />
           <p className="note">
             {filteredAreas.length} {filteredAreas.length === 1 ? 'área encontrada' : 'áreas encontradas'}
             {activeFilter !== "all" && ` (filtrado por ${activeFilter})`}

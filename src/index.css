@@ -134,7 +134,7 @@ body {
 }
 
 /* Ajustar colores de las tarjetas para que combinen */
-.stat-card.enviados {
+.stat-card.recibidos {
   --card-color: #16a34a;
   --card-color-light: #22c55e;
 }
@@ -369,7 +369,7 @@ input[type="checkbox"] {
   font-weight: 500;
 }
 
-.status-badge.enviado {
+.status-badge.recibido {
   background-color: #d1fae5;
   color: #065f46;
 }

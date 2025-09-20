@@ -6,7 +6,7 @@ export default function SearchBar({ value, onChange }) {
       <i className="fas fa-search"></i>
       <input 
         className="search" 
-        placeholder="Buscar por nombre o código..." 
+        placeholder="Buscar..." 
         value={value} 
         onChange={e => onChange(e.target.value)} 
       />

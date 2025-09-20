@@ -30,7 +30,7 @@ export default function AreaList({ areas, onToggle }) {
                     {area.nombre}
                   </div>
                   <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '4px' }}>
-                    Código: {area.cod} {area.nivel && `| Nivel: ${area.nivel}`}
+                     {area.padre && ` Pertence a: ${area.padre}`}
                   </div>
                 </div>
               </td>
@@ -38,11 +38,11 @@ export default function AreaList({ areas, onToggle }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <input 
                     type="checkbox" 
-                    checked={!!area.enviado} 
+                    checked={!!area.recibido} 
                     onChange={() => onToggle(area)} 
                   />
-                  <span className={`status-badge ${area.enviado ? 'enviado' : 'pendiente'}`}>
-                    {area.enviado ? 'Enviado' : 'Pendiente'}
+                  <span className={`status-badge ${area.recibido ? 'recibido' : 'pendiente'}`}>
+                    {area.recibido ? 'Recibido' : 'Pendiente'}
                   </span>
                 </div>
               </td>

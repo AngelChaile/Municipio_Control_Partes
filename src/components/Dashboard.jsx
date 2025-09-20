@@ -10,21 +10,21 @@ export default function Dashboard({ areas, activeFilter, onFilterClick }) {
     );
   }
 
-  const enviados = areas.filter((a) => a.enviado).length;
-  const pendientes = areas.length - enviados;
+  const recibidos = areas.filter((a) => a.recibido).length;
+  const pendientes = areas.length - recibidos;
 
   return (
     <div className="dashboard">
       <h2>Resumen de Estado</h2>
       <div className="stats-grid">
         <div 
-          className={`stat-card enviados ${activeFilter === "enviados" ? "active" : ""}`}
-          onClick={() => onFilterClick("enviados")}
+          className={`stat-card recibidos ${activeFilter === "recibidos" ? "active" : ""}`}
+          onClick={() => onFilterClick("recibidos")}
           style={{ cursor: "pointer" }}
         >
           <i className="fas fa-check-circle"></i>
-          <h3>Enviados</h3>
-          <p>{enviados}</p>
+          <h3>recibidos</h3>
+          <p>{recibidos}</p>
         </div>
         <div 
           className={`stat-card pendientes ${activeFilter === "pendientes" ? "active" : ""}`}
