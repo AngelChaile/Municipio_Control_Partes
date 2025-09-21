@@ -29,9 +29,9 @@ export default function AreaList({ areas, onToggle }) {
                   <div style={{ fontWeight: '600', color: '#1f2937' }}>
                     {area.nombre}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '4px' }}>
-                     {area.padre && ` Pertence a: ${area.padre}`}
-                  </div>
+                  {<div style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '4px' }}>
+                     {area.padre }
+                  </div>}
                 </div>
               </td>
               <td>

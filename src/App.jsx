@@ -115,14 +115,14 @@ export default function App() {
     'Última Actualización': area.updatedAt ? 
       (area.updatedAt.seconds ? 
         new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
-        new Date(area.updatedAt).toLocaleString()) : 'NUNCA',
-    'Actualizado Por': area.updatedBy || 'NO REGISTRADO'
+        new Date(area.updatedAt).toLocaleString()) : '',
+    /* 'Actualizado Por': area.updatedBy || '' */
   }));
 
     // Crear libro de Excel
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Control de Partes');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Control de Partes Recibidos');
 
     // Obtener fecha para el nombre del archivo
     const now = new Date();
@@ -192,7 +192,7 @@ export default function App() {
       {activeFilter !== "all" && (
         <div className="filter-indicator">
           <span>
-            Mostrando {activeFilter === "recibidos" ? "áreas enviadas" : "áreas pendientes"}
+            Mostrando {activeFilter === "recibidos" ? "áreas recibidas" : "áreas pendientes"}
             <button 
               onClick={() => setActiveFilter("all")}
               className="clear-filter"
