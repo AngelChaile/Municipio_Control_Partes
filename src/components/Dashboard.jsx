@@ -4,7 +4,7 @@ export default function Dashboard({ areas, activeFilter, onFilterClick }) {
   if (!areas || areas.length === 0) {
     return (
       <div className="dashboard">
-        <h2>Resumen de Estado</h2>
+        <h2>Control de Tarjetas</h2>
         <p>No hay datos disponibles todavía.</p>
       </div>
     );
