@@ -134,31 +134,31 @@ export default function App() {
   };
 
   const saveMonthlyReport = async (areasData) => {
-    try {
-      if (!auth.currentUser) return;
+  try {
+    // if (!auth.currentUser) return;
 
-      const areasPendientes = areasData.filter(area => !area.recibido);
-      const now = new Date();
-      const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+    const areasPendientes = areasData.filter(area => !area.recibido); // ← Cambiado a recibido
+    const now = new Date();
+    const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
-      await addDoc(collection(db, "monthly_reports"), {
-        month: monthStr,
-        timestamp: serverTimestamp(),
-        totalAreas: areasData.length,
-        recibidos: areasData.filter(a => a.recibido).length,
-        pendientes: areasPendientes.length,
-        generatedBy: auth.currentUser.email,
-        areasPendientes: areasPendientes.map(area => ({
-          cod: area.cod,
-          nombre: area.nombre,
-          updatedBy: area.updatedBy || 'Nunca actualizado'
-        }))
-      });
+    await addDoc(collection(db, "monthly_reports"), {
+      month: monthStr,
+      timestamp: serverTimestamp(),
+      totalAreas: areasData.length,
+      recibidos: areasData.filter(a => a.recibido).length, // ← Cambiado a recibidos
+      pendientes: areasPendientes.length,
+      generatedBy: auth.currentUser.email,
+      areasPendientes: areasPendientes.map(area => ({
+        cod: area.cod,
+        nombre: area.nombre,
+        updatedBy: area.updatedBy || 'Nunca actualizado'
+      }))
+    });
 
-    } catch (error) {
-      console.error('Error guardando reporte histórico:', error);
-    }
-  };
+  } catch (error) {
+    console.error('Error guardando reporte histórico:', error);
+  }
+};
 
   // Para reporte historico
   const toggleHistoricalReports = () => {
