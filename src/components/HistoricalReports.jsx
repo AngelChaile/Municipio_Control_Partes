@@ -57,7 +57,7 @@ const HistoricalReports = () => {
               
               <div className="report-stats">
                 <span className="stat total">Total: {report.totalAreas}</span>
-                <span className="stat enviados">Enviados: {report.enviados}</span>
+                <span className="stat recibidos">Recibidos: {report.recibidos}</span>
                 <span className="stat pendientes">Pendientes: {report.pendientes}</span>
               </div>
             </div>

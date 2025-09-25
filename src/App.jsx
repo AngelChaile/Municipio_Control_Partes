@@ -46,8 +46,8 @@ export default function App() {
         return false;
       }
       
-      if (statusFilter === "enviados") return a.enviado;
-      if (statusFilter === "pendientes") return !a.enviado;
+      if (statusFilter === "recibidos") return a.recibido;
+      if (statusFilter === "pendientes") return !a.recibido;
       
       return true;
     });
@@ -55,11 +55,11 @@ export default function App() {
     setFilteredAreas(result);
   };
 
-  const toggleEnviado = async (area) => {
+  const toggleRecibido = async (area) => {
     try {
       const ref = doc(db, "areas", area.id);
       await updateDoc(ref, {
-        enviado: !area.enviado,
+        recibido: !area.recibido,
         updatedBy: auth.currentUser ? auth.currentUser.email : "anónimo",
         updatedAt: new Date(),
       });
@@ -90,7 +90,7 @@ export default function App() {
       const snap = await getDocs(collection(db, "areas"));
       const batch = writeBatch(db);
       snap.docs.forEach((d) => batch.update(d.ref, {
-        enviado: false,
+        recibido: false,
         updatedBy: null,
         updatedAt: null
       }));
@@ -111,7 +111,7 @@ export default function App() {
     const excelData = areas.map(area => ({
       'Código': area.cod,
       'Área': area.nombre,
-      'Estado': area.enviado ? 'ENVIADO' : 'PENDIENTE',
+      'Estado': area.recibido ? 'recibido' : 'PENDIENTE',
       'Última Actualización': area.updatedAt ? 
         (area.updatedAt.seconds ? 
           new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
@@ -135,7 +135,7 @@ export default function App() {
     try {
       if (!auth.currentUser) return;
 
-      const areasPendientes = areasData.filter(area => !area.enviado);
+      const areasPendientes = areasData.filter(area => !area.recibido);
       const now = new Date();
       const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
@@ -143,7 +143,7 @@ export default function App() {
         month: monthStr,
         timestamp: serverTimestamp(),
         totalAreas: areasData.length,
-        enviados: areasData.filter(a => a.enviado).length,
+        recibidos: areasData.filter(a => a.recibido).length,
         pendientes: areasPendientes.length,
         generatedBy: auth.currentUser.email,
         areasPendientes: areasPendientes.map(area => ({
@@ -201,7 +201,7 @@ export default function App() {
       {activeFilter !== "all" && (
         <div className="filter-indicator">
           <span>
-            Mostrando {activeFilter === "enviados" ? "áreas enviadas" : "áreas pendientes"}
+            Mostrando {activeFilter === "recibidos" ? "áreas enviadas" : "áreas pendientes"}
             <button 
               onClick={() => setActiveFilter("all")}
               className="clear-filter"
@@ -219,7 +219,7 @@ export default function App() {
         </div>
       ) : (
         <>
-          <AreaList areas={filteredAreas} onToggle={toggleEnviado} />
+          <AreaList areas={filteredAreas} onToggle={toggleRecibido} />
           <p className="note">
             {filteredAreas.length} {filteredAreas.length === 1 ? 'área encontrada' : 'áreas encontradas'}
             {activeFilter !== "all" && ` (filtrado por ${activeFilter})`}
