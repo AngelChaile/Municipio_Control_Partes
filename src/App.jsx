@@ -6,6 +6,8 @@ import SearchBar from "./components/SearchBar";
 import ResetButton from "./components/ResetButton";
 import ExportButton from "./components/ExportButton";
 import Dashboard from "./components/Dashboard";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"; // Para el reporte mensual
+import HistoricalReports from "./components/HistoricalReports" // Nuevo componente para reportes históricos
 
 export default function App() {
   const [areas, setAreas] = useState([]);
@@ -13,6 +15,7 @@ export default function App() {
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
+  const [showHistoricalReports, setShowHistoricalReports] = useState(false); // Para mostrar/ocultar reportes históricos
 
   useEffect(() => {
     const q = query(collection(db, "areas"), orderBy("cod"));
@@ -136,24 +139,47 @@ export default function App() {
     saveMonthlyReport(monthStr, areas);
   };
 
-  const saveMonthlyReport = async (month, areasData) => {
-    try {
-      // Acá se guardará en Firestore en una colección "monthly_reports"
-      // Esto requiere configurar seguridad en Firestore
-      console.log('Guardando reporte mensual para:', month, areasData);
-      
-      // Mostrar confirmación
-      window.Swal.fire({
-        icon: 'success',
-        title: 'Reporte generado',
-        text: `Se ha guardado el reporte de ${month} para consultas históricas`,
-        timer: 3000,
-        showConfirmButton: false
-      });
-    } catch (error) {
-      console.error('Error guardando reporte histórico:', error);
-    }
-  };
+const saveMonthlyReport = async (month, areasData) => {
+  try {
+    // Verificar que el usuario esté autenticado
+/*     if (!auth.currentUser) {
+      console.log('Usuario no autenticado, no se guarda reporte histórico');
+      return;
+    } */
+
+    // Filtrar solo las áreas PENDIENTES (que NO enviaron)
+    const areasPendientes = areasData.filter(area => !area.recibido);
+
+    const docRef = await addDoc(collection(db, "monthly_reports"), {
+      month: month,
+      timestamp: serverTimestamp(),
+      totalAreas: areasData.length,
+      recibidos: areasData.filter(a => a.recibido).length,
+      pendientes: areasPendientes.length,
+      generatedBy: auth.currentUser.email,
+      // Guardar solo las áreas PENDIENTES
+      areasPendientes: areasPendientes.map(area => ({
+        cod: area.cod,
+        nombre: area.nombre,
+        updatedBy: area.updatedBy || 'Nunca actualizado',
+        updatedAt: area.updatedAt ? 
+          (area.updatedAt.seconds ? 
+            new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
+            new Date(area.updatedAt).toLocaleString()) : 'Nunca'
+      }))
+    });
+
+    console.log('Reporte mensual guardado con ID:', docRef.id);
+    
+  } catch (error) {
+    console.error('Error guardando reporte histórico:', error);
+  }
+};
+
+// Nueva función para renderizar el componente de reportes históricos
+const toggleHistoricalReports = () => {
+  setShowHistoricalReports(!showHistoricalReports);
+};
 
   return (
     <div className="container">
@@ -186,6 +212,12 @@ export default function App() {
         <SearchBar value={filter} onChange={setFilter} />
         <ResetButton onReset={vaciarTodo} />
         <ExportButton onExport={exportToExcel} />
+
+{/* Boton para ver historico */}
+<button className="historical-btn" onClick={toggleHistoricalReports}>
+  <i className="fas fa-history"></i>
+  {showHistoricalReports ? 'Ocultar Histórico' : 'Ver Histórico'}
+</button>
       </div>
 
       {/* Indicador de filtro activo */}
@@ -215,6 +247,7 @@ export default function App() {
             {filteredAreas.length} {filteredAreas.length === 1 ? 'área encontrada' : 'áreas encontradas'}
             {activeFilter !== "all" && ` (filtrado por ${activeFilter})`}
           </p>
+          {showHistoricalReports && <HistoricalReports />} {/* Renderizar reportes históricos si está activado */}
         </>
       )}
     </div>
