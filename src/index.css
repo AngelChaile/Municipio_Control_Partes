@@ -524,6 +524,9 @@ input[type="checkbox"] {
 
 
 
+
+
+/* Estilos para el componente de reportes históricos */
 /* Botón de histórico */
 button.historical-btn {
   background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
@@ -545,7 +548,7 @@ button.historical-btn:hover {
   transform: translateY(-2px);
 }
 
-/* Estilos para reportes históricos */
+/* Estilos básicos para el panel de histórico */
 .historical-reports {
   background: white;
   border-radius: 12px;
@@ -559,97 +562,4 @@ button.historical-btn:hover {
   margin-bottom: 20px;
   border-bottom: 2px solid var(--border-color);
   padding-bottom: 10px;
-}
-
-.report-card {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-  background: #fafafa;
-}
-
-.report-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.report-header h4 {
-  margin: 0;
-  color: var(--primary-color);
-}
-
-.report-date {
-  color: var(--gray-color);
-  font-size: 0.9rem;
-}
-
-.report-stats {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-.stat {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.stat.total { background: #e0f2fe; color: #0369a1; }
-.stat.pendientes { background: #dcfce7; color: #166534; }
-.stat.pendientes { background: #fef3c7; color: #92400e; }
-
-.report-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-view, .btn-export {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.btn-view {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-export {
-  background: #10b981;
-  color: white;
-}
-
-.report-details {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px dashed #ccc;
-}
-
-.report-details h5 {
-  margin: 0 0 8px 0;
-  color: var(--dark-color);
-}
-
-.report-details ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.report-details li {
-  margin-bottom: 8px;
-  color: #4b5563;
-}
-
-.report-details small {
-  color: #6b7280;
 }

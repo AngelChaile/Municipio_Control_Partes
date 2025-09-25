@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { db, auth } from "./firebase";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, writeBatch, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import AreaList from "./components/AreaList";
-import SearchBar from "./components/SearchBar";
-import ResetButton from "./components/ResetButton";
-import ExportButton from "./components/ExportButton";
 import Dashboard from "./components/Dashboard";
-// import HistoricalReports from "./components/HistoricalReports"; // Temporalmente comentado
+import ExportButton from "./components/ExportButton";
+import ResetButton from "./components/ResetButton";
+import SearchBar from "./components/SearchBar";
+import { auth, db } from "./firebase";
 
 export default function App() {
   const [areas, setAreas] = useState([]);
@@ -14,7 +13,7 @@ export default function App() {
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
-  // const [showHistoricalReports, setShowHistoricalReports] = useState(false); // Temporalmente comentado
+  const [showHistoricalReports, setShowHistoricalReports] = useState(false); // ← NUEVO ESTADO
 
   useEffect(() => {
     const q = query(collection(db, "areas"), orderBy("nombre"));
@@ -41,17 +40,17 @@ export default function App() {
 
   const applyFilters = (areasList, searchFilter, statusFilter) => {
     let result = areasList.filter((a) => {
-      if (searchFilter && !(a.nombre || "").toLowerCase().includes(searchFilter.toLowerCase()) && 
-          !(a.cod || "").includes(searchFilter)) {
+      if (searchFilter && !(a.nombre || "").toLowerCase().includes(searchFilter.toLowerCase()) &&
+        !(a.cod || "").includes(searchFilter)) {
         return false;
       }
-      
+
       if (statusFilter === "recibidos") return a.recibido;
       if (statusFilter === "pendientes") return !a.recibido;
-      
+
       return true;
     });
-    
+
     setFilteredAreas(result);
   };
 
@@ -107,14 +106,16 @@ export default function App() {
     setActiveFilter(filterType);
   };
 
+
+
   const exportToExcel = () => {
     const excelData = areas.map(area => ({
       'Código': area.cod,
       'Área': area.nombre,
       'Estado': area.recibido ? 'recibido' : 'PENDIENTE',
-      'Última Actualización': area.updatedAt ? 
-        (area.updatedAt.seconds ? 
-          new Date(area.updatedAt.seconds * 1000).toLocaleString() : 
+      'Última Actualización': area.updatedAt ?
+        (area.updatedAt.seconds ?
+          new Date(area.updatedAt.seconds * 1000).toLocaleString() :
           new Date(area.updatedAt).toLocaleString()) : 'NUNCA',
       'Actualizado Por': area.updatedBy || 'NO REGISTRADO'
     }));
@@ -158,15 +159,15 @@ export default function App() {
     }
   };
 
-  // Temporalmente comentado
-  // const toggleHistoricalReports = () => {
-  //   setShowHistoricalReports(!showHistoricalReports);
-  // };
+  // Para reporte historico
+  const toggleHistoricalReports = () => {
+    setShowHistoricalReports(!showHistoricalReports);
+  };
 
   return (
     <div className="container">
-      <Dashboard 
-        areas={areas} 
+      <Dashboard
+        areas={areas}
         activeFilter={activeFilter}
         onFilterClick={handleFilterClick}
       />
@@ -178,10 +179,10 @@ export default function App() {
             <p className="subtitle">Municipalidad - Gestión de áreas</p>
           </div>
           <div>
-            <img 
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s" 
-              alt="Logo Municipio" 
-              className="logo" 
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcrks58z3KijKWqU4ejPd-P5CvEItOiiPPWg&s"
+              alt="Logo Municipio"
+              className="logo"
             />
           </div>
         </div>
@@ -191,18 +192,19 @@ export default function App() {
         <SearchBar value={filter} onChange={setFilter} />
         <ResetButton onReset={vaciarTodo} />
         <ExportButton onExport={exportToExcel} />
-        {/* Temporalmente comentado */}
-        {/* <button className="historical-btn" onClick={toggleHistoricalReports}>
+
+        {/* ← NUEVO BOTÓN (reemplaza lo comentado) */}
+        <button className="historical-btn" onClick={toggleHistoricalReports}>
           <i className="fas fa-history"></i>
           {showHistoricalReports ? 'Ocultar Histórico' : 'Ver Histórico'}
-        </button> */}
+        </button>
       </div>
 
       {activeFilter !== "all" && (
         <div className="filter-indicator">
           <span>
             Mostrando {activeFilter === "recibidos" ? "áreas enviadas" : "áreas pendientes"}
-            <button 
+            <button
               onClick={() => setActiveFilter("all")}
               className="clear-filter"
             >
@@ -227,8 +229,8 @@ export default function App() {
         </>
       )}
 
-      {/* Temporalmente comentado */}
-      {/* {showHistoricalReports && <HistoricalReports />} */}
+      {/* ← MOSTRAR Componente de reportes históricos */}
+      {showHistoricalReports && <HistoricalReports />} 
     </div>
   );
 }
