@@ -1,8 +1,8 @@
 import React from "react";
 
 const HistoricalReports = () => {
-      console.log('🔴 HistoricalReports component is RENDERING!'); // ← Agrega esto
-      
+  console.log('🔴 HistoricalReports component is RENDERING!');
+  
   return (
     <div style={{
       background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
@@ -17,7 +17,7 @@ const HistoricalReports = () => {
         fontSize: '3rem',
         marginBottom: '15px'
       }}>
-        🚧
+        📊
       </div>
       
       <h3 style={{ 
@@ -50,23 +50,27 @@ const HistoricalReports = () => {
           fontSize: '1rem',
           lineHeight: '1.5'
         }}>
-          Podrás ver los reportes mensuales de áreas que no enviaron partes.
+          Podrás ver los reportes mensuales de áreas que <strong>NO RECIBIERON</strong> partes.
           <br/>
           <em>Funcionalidad en desarrollo - Estará disponible pronto.</em>
         </p>
       </div>
       
-      <div style={{
-        background: '#f59e0b',
-        color: 'white',
-        padding: '8px 16px',
-        borderRadius: '20px',
-        display: 'inline-block',
-        fontSize: '0.9rem',
-        fontWeight: '500'
-      }}>
-        Estado: En desarrollo
-      </div>
+      <button 
+        onClick={() => window.location.reload()} // Temporal: recargar para volver
+        style={{
+          background: '#dc2626',
+          color: 'white',
+          border: 'none',
+          padding: '10px 20px',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontSize: '1rem',
+          fontWeight: '500'
+        }}
+      >
+        Volver al Listado Actual
+      </button>
     </div>
   );
 };

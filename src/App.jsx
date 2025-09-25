@@ -161,11 +161,11 @@ export default function App() {
   };
 
   // Para reporte historico
-const toggleHistoricalReports = () => {
-  console.log('Botón histórico clickeado. Estado actual:', showHistoricalReports);
-  setShowHistoricalReports(!showHistoricalReports);
-  console.log('Nuevo estado:', !showHistoricalReports);
-};
+  const toggleHistoricalReports = () => {
+    console.log('Botón histórico clickeado. Estado actual:', showHistoricalReports);
+    setShowHistoricalReports(!showHistoricalReports);
+    console.log('Nuevo estado:', !showHistoricalReports);
+  };
 
   return (
     <div className="container">
@@ -199,7 +199,7 @@ const toggleHistoricalReports = () => {
         {/* ← NUEVO BOTÓN (reemplaza lo comentado) */}
         <button className="historical-btn" onClick={toggleHistoricalReports}>
           <i className="fas fa-history"></i>
-          {showHistoricalReports ? 'Ocultar Histórico' : 'Ver Histórico'}
+          {showHistoricalReports ? 'Volver al Listado' : 'Ver Histórico'}
         </button>
       </div>
 
@@ -224,16 +224,21 @@ const toggleHistoricalReports = () => {
         </div>
       ) : (
         <>
-          <AreaList areas={filteredAreas} onToggle={toggleRecibido} />
-          <p className="note">
-            {filteredAreas.length} {filteredAreas.length === 1 ? 'área encontrada' : 'áreas encontradas'}
-            {activeFilter !== "all" && ` (filtrado por ${activeFilter})`}
-          </p>
+          {/* MOSTRAR HISTORICO O LISTA DE ÁREAS */}
+          {showHistoricalReports ? (
+            <HistoricalReports />
+          ) : (
+            <>
+              <AreaList areas={filteredAreas} onToggle={toggleEnviado} />
+              <p className="note">
+                {filteredAreas.length} {filteredAreas.length === 1 ? 'área encontrada' : 'áreas encontradas'}
+                {activeFilter !== "all" && ` (filtrado por ${activeFilter})`}
+              </p>
+            </>
+          )}
         </>
       )}
 
-      {/* ← MOSTRAR Componente de reportes históricos */}
-      {showHistoricalReports && <HistoricalReports />} 
     </div>
   );
 }
