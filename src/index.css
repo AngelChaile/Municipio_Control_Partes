@@ -548,6 +548,7 @@ button.historical-btn:hover {
   transform: translateY(-2px);
 }
 
+
 /* Estilos básicos para el panel de histórico */
 .historical-reports {
   background: white;
@@ -555,6 +556,9 @@ button.historical-btn:hover {
   padding: 24px;
   margin-top: 24px;
   box-shadow: var(--shadow);
+  border: 2px solid #e5e7eb;
+  position: relative;
+  z-index: 10;
 }
 
 .historical-reports h3 {
@@ -562,4 +566,12 @@ button.historical-btn:hover {
   margin-bottom: 20px;
   border-bottom: 2px solid var(--border-color);
   padding-bottom: 10px;
+  font-size: 1.25rem;
+}
+
+/* Asegurar que sea visible */
+.historical-reports * {
+  color: #333 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }

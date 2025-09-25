@@ -160,9 +160,11 @@ export default function App() {
   };
 
   // Para reporte historico
-  const toggleHistoricalReports = () => {
-    setShowHistoricalReports(!showHistoricalReports);
-  };
+const toggleHistoricalReports = () => {
+  console.log('Botón histórico clickeado. Estado actual:', showHistoricalReports);
+  setShowHistoricalReports(!showHistoricalReports);
+  console.log('Nuevo estado:', !showHistoricalReports);
+};
 
   return (
     <div className="container">
