@@ -6,6 +6,7 @@ import ExportButton from "./components/ExportButton";
 import ResetButton from "./components/ResetButton";
 import SearchBar from "./components/SearchBar";
 import { auth, db } from "./firebase";
+import HistoricalReports from "./components/HistoricalReports"; // ← Historico
 
 export default function App() {
   const [areas, setAreas] = useState([]);
