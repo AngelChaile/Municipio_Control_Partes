@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
-export default function HistoricalReports() {
+const HistoricalReports = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState(null);
@@ -28,21 +28,6 @@ export default function HistoricalReports() {
       console.error('Error cargando reportes históricos:', error);
       setLoading(false);
     }
-  };
-
-  const exportReportToExcel = (report) => {
-    const excelData = report.areasPendientes.map(area => ({
-      'Código': area.cod,
-      'Área': area.nombre,
-      'Última Actualización': area.updatedAt,
-      'Actualizado Por': area.updatedBy
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Pendientes_${report.month}`);
-    
-    XLSX.writeFile(workbook, `areas_pendientes_${report.month.replace(/\s+/g, '_')}.xlsx`);
   };
 
   if (loading) {
@@ -75,41 +60,12 @@ export default function HistoricalReports() {
                 <span className="stat enviados">Enviados: {report.enviados}</span>
                 <span className="stat pendientes">Pendientes: {report.pendientes}</span>
               </div>
-              
-              <div className="report-actions">
-                <button 
-                  className="btn-view"
-                  onClick={() => setSelectedReport(selectedReport?.id === report.id ? null : report)}
-                >
-                  {selectedReport?.id === report.id ? 'Ocultar' : 'Ver Detalles'}
-                </button>
-                
-                <button 
-                  className="btn-export"
-                  onClick={() => exportReportToExcel(report)}
-                >
-                  <i className="fas fa-download"></i> Exportar
-                </button>
-              </div>
-              
-              {selectedReport?.id === report.id && (
-                <div className="report-details">
-                  <h5>Áreas que no enviaron partes:</h5>
-                  <ul>
-                    {report.areasPendientes.map((area, index) => (
-                      <li key={index}>
-                        <strong>{area.cod}</strong> - {area.nombre}
-                        <br/>
-                        <small>Última actualización: {area.updatedAt}</small>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           ))}
         </div>
       )}
     </div>
   );
-}
+};
+
+export default HistoricalReports;
