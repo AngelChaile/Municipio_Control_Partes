@@ -229,7 +229,7 @@ export default function App() {
             <HistoricalReports />
           ) : (
             <>
-              <AreaList areas={filteredAreas} onToggle={toggleEnviado} />
+              <AreaList areas={filteredAreas} onToggle={toggleRecibido} />
               <p className="note">
                 {filteredAreas.length} {filteredAreas.length === 1 ? 'área encontrada' : 'áreas encontradas'}
                 {activeFilter !== "all" && ` (filtrado por ${activeFilter})`}
