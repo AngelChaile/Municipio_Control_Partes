@@ -138,7 +138,7 @@ export default function App() {
 
   const saveMonthlyReport = async (month, areasData) => {
     try {
-      // Aquí guardarías en Firestore en una colección "monthly_reports"
+      // Acá se guardará en Firestore en una colección "monthly_reports"
       // Esto requiere configurar seguridad en Firestore
       console.log('Guardando reporte mensual para:', month, areasData);
       

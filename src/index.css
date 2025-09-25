@@ -105,7 +105,7 @@ body {
   color: var(--dark-color);
 }
 
-/* Stats Cards - Rediseñadas */
+/* Stats Cards */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -170,18 +170,6 @@ body {
   margin-bottom: 8px;
   opacity: 0.9;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -261,7 +249,6 @@ button.export:hover {
 
 
 
-
 /* Botón de exportar */
 button.export {
   background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
@@ -294,9 +281,6 @@ button.export:hover {
     justify-content: center;
   }
 }
-
-
-
 
 
 
@@ -429,7 +413,7 @@ input[type="checkbox"] {
 }
 
 /* Animation for chart */
-@keyframes fadeIn {
+/* @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
@@ -437,7 +421,9 @@ input[type="checkbox"] {
 .chart-container {
   animation: fadeIn 0.5s ease-out;
 }
+ */
 
+ 
 /* Custom SweetAlert styles */
 .custom-swal {
   border-radius: 12px !important;
