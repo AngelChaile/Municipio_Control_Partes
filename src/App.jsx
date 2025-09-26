@@ -55,12 +55,22 @@ export default function App() {
     setFilteredAreas(result);
   };
 
+
+
+
+
   const toggleRecibido = async (area) => {
     try {
+      let userEmail = 'usuario_no_autenticado';
+
+      if (auth && auth.currentUser) {
+        userEmail = auth.currentUser.email;
+      }
+
       const ref = doc(db, "areas", area.id);
       await updateDoc(ref, {
         recibido: !area.recibido,
-        updatedBy: auth.currentUser ? auth.currentUser.email : "anónimo",
+        updatedBy: userEmail, // ← Usa la variable segura
         updatedAt: new Date(),
       });
     } catch (e) {
@@ -68,6 +78,11 @@ export default function App() {
       window.Swal.fire('Error', 'Error al actualizar. Revisa permisos de Firestore o tu conexión.', 'error');
     }
   };
+
+
+
+
+
 
   const vaciarTodo = async () => {
     const result = await window.Swal.fire({
@@ -137,79 +152,101 @@ export default function App() {
 
 
 
+
   const saveMonthlyReport = async (areasData) => {
-  try {
-    // if (!auth.currentUser) {
-    //   console.log('❌ Usuario no autenticado, no se guarda reporte');
-    //   return;
-    // }
+    try {
+      // Verificar si Firebase Auth está disponible y el usuario está autenticado
+      let userEmail = 'usuario_no_autenticado';
 
-    // Usa 'recibido' en lugar de 'enviado' para coincidir con tus cambios
-    const areasPendientes = areasData.filter(area => !area.recibido);
-    const now = new Date();
-    const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+      if (auth && auth.currentUser) {
+        userEmail = auth.currentUser.email;
+      } else {
+        console.log('⚠️ Usuario no autenticado, guardando con email genérico');
+      }
 
-    console.log('💾 Intentando guardar reporte para:', monthStr);
-    console.log('📊 Datos:', {
-      totalAreas: areasData.length,
-      recibidos: areasData.filter(a => a.recibido).length,
-      pendientes: areasPendientes.length
-    });
+      // Usa 'recibido' en lugar de 'enviado' para coincidir con tus cambios
+      const areasPendientes = areasData.filter(area => !area.recibido);
+      const now = new Date();
+      const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
-    const docRef = await addDoc(collection(db, "monthly_reports"), {
-      month: monthStr,
-      timestamp: serverTimestamp(),
-      totalAreas: areasData.length,
-      recibidos: areasData.filter(a => a.recibido).length, // ← Cambiado a 'recibidos'
-      pendientes: areasPendientes.length,
-      generatedBy: auth.currentUser.email,
-      areasPendientes: areasPendientes.map(area => ({
-        cod: area.cod,
-        nombre: area.nombre,
-        updatedBy: area.updatedBy || 'Nunca actualizado'
-      }))
-    });
+      console.log('💾 Guardando reporte para:', monthStr);
+      console.log('📊 Datos:', {
+        totalAreas: areasData.length,
+        recibidos: areasData.filter(a => a.recibido).length,
+        pendientes: areasPendientes.length,
+        usuario: userEmail
+      });
 
-    console.log('✅ Reporte guardado con ID:', docRef.id);
-    
-  } catch (error) {
-    console.error('❌ Error guardando reporte histórico:', error);
-  }
-};
+      const docRef = await addDoc(collection(db, "monthly_reports"), {
+        month: monthStr,
+        timestamp: serverTimestamp(),
+        totalAreas: areasData.length,
+        recibidos: areasData.filter(a => a.recibido).length,
+        pendientes: areasPendientes.length,
+        generatedBy: userEmail, // ← Usa la variable segura
+        areasPendientes: areasPendientes.map(area => ({
+          cod: area.cod,
+          nombre: area.nombre,
+          updatedBy: area.updatedBy || 'Nunca actualizado',
+          updatedAt: area.updatedAt ?
+            (area.updatedAt.seconds ?
+              new Date(area.updatedAt.seconds * 1000).toLocaleString() :
+              new Date(area.updatedAt).toLocaleString()) : 'Nunca'
+        }))
+      });
+
+      console.log('✅ Reporte guardado con ID:', docRef.id);
+
+      // Mostrar confirmación solo si hay usuario autenticado
+      if (auth && auth.currentUser) {
+        window.Swal.fire({
+          icon: 'success',
+          title: 'Reporte histórico guardado',
+          text: `Se ha guardado el reporte de ${monthStr}`,
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+
+    } catch (error) {
+      console.error('❌ Error guardando reporte histórico:', error);
+      // No mostrar error al usuario para no interrumpir la descarga del Excel
+    }
+  };
 
 
 
 
   // Y agrega esta función para probar el guardado de reportes nuevo:
-const generateTestReport = async () => {
-  const now = new Date();
-  const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
-  
-  // Datos de prueba
-  const testData = {
-    month: monthStr,
-    timestamp: new Date(),
-    totalAreas: 15,
-    recibidos: 10,
-    pendientes: 5,
-    generatedBy: 'test@municipio.com',
-    areasPendientes: [
-      { cod: '001', nombre: 'Área de Prueba 1', updatedBy: 'Sistema' },
-      { cod: '002', nombre: 'Área de Prueba 2', updatedBy: 'Sistema' },
-      { cod: '003', nombre: 'Área de Prueba 3', updatedBy: 'Sistema' },
-      { cod: '004', nombre: 'Área de Prueba 4', updatedBy: 'Sistema' },
-      { cod: '005', nombre: 'Área de Prueba 5', updatedBy: 'Sistema' }
-    ]
-  };
+  const generateTestReport = async () => {
+    const now = new Date();
+    const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
-  try {
-    const docRef = await addDoc(collection(db, "monthly_reports"), testData);
-    console.log('✅ Reporte de prueba guardado:', docRef.id);
-    window.Swal.fire('Éxito', 'Reporte de prueba generado', 'success');
-  } catch (error) {
-    console.error('❌ Error:', error);
-  }
-};
+    // Datos de prueba
+    const testData = {
+      month: monthStr,
+      timestamp: new Date(),
+      totalAreas: 15,
+      recibidos: 10,
+      pendientes: 5,
+      generatedBy: 'test@municipio.com',
+      areasPendientes: [
+        { cod: '001', nombre: 'Área de Prueba 1', updatedBy: 'Sistema' },
+        { cod: '002', nombre: 'Área de Prueba 2', updatedBy: 'Sistema' },
+        { cod: '003', nombre: 'Área de Prueba 3', updatedBy: 'Sistema' },
+        { cod: '004', nombre: 'Área de Prueba 4', updatedBy: 'Sistema' },
+        { cod: '005', nombre: 'Área de Prueba 5', updatedBy: 'Sistema' }
+      ]
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, "monthly_reports"), testData);
+      console.log('✅ Reporte de prueba guardado:', docRef.id);
+      window.Swal.fire('Éxito', 'Reporte de prueba generado', 'success');
+    } catch (error) {
+      console.error('❌ Error:', error);
+    }
+  };
 
 
 
@@ -272,6 +309,25 @@ const generateTestReport = async () => {
         >
           <i className="fas fa-vial"></i> Generar Reporte Test
         </button>
+        {// Botón para debuggear auth pruebas
+        }
+        <button
+          onClick={() => console.log('Auth state:', auth?.currentUser)}
+          style={{
+            background: '#6b7280',
+            color: 'white',
+            padding: '8px 12px',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '0.8rem'
+          }}
+        >
+          <i className="fas fa-bug"></i> Debug Auth
+        </button>
+
+
+
       </div>
 
       {activeFilter !== "all" && (
