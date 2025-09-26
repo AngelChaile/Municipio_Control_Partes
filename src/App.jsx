@@ -133,19 +133,34 @@ export default function App() {
     saveMonthlyReport(areas);
   };
 
+
+
+
+
   const saveMonthlyReport = async (areasData) => {
   try {
-    // if (!auth.currentUser) return;
+    // if (!auth.currentUser) {
+    //   console.log('❌ Usuario no autenticado, no se guarda reporte');
+    //   return;
+    // }
 
-    const areasPendientes = areasData.filter(area => !area.recibido); // ← Cambiado a recibido
+    // Usa 'recibido' en lugar de 'enviado' para coincidir con tus cambios
+    const areasPendientes = areasData.filter(area => !area.recibido);
     const now = new Date();
     const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
-    await addDoc(collection(db, "monthly_reports"), {
+    console.log('💾 Intentando guardar reporte para:', monthStr);
+    console.log('📊 Datos:', {
+      totalAreas: areasData.length,
+      recibidos: areasData.filter(a => a.recibido).length,
+      pendientes: areasPendientes.length
+    });
+
+    const docRef = await addDoc(collection(db, "monthly_reports"), {
       month: monthStr,
       timestamp: serverTimestamp(),
       totalAreas: areasData.length,
-      recibidos: areasData.filter(a => a.recibido).length, // ← Cambiado a recibidos
+      recibidos: areasData.filter(a => a.recibido).length, // ← Cambiado a 'recibidos'
       pendientes: areasPendientes.length,
       generatedBy: auth.currentUser.email,
       areasPendientes: areasPendientes.map(area => ({
@@ -155,10 +170,48 @@ export default function App() {
       }))
     });
 
+    console.log('✅ Reporte guardado con ID:', docRef.id);
+    
   } catch (error) {
-    console.error('Error guardando reporte histórico:', error);
+    console.error('❌ Error guardando reporte histórico:', error);
   }
 };
+
+
+
+
+  // Y agrega esta función para probar el guardado de reportes nuevo:
+const generateTestReport = async () => {
+  const now = new Date();
+  const monthStr = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+  
+  // Datos de prueba
+  const testData = {
+    month: monthStr,
+    timestamp: new Date(),
+    totalAreas: 15,
+    recibidos: 10,
+    pendientes: 5,
+    generatedBy: 'test@municipio.com',
+    areasPendientes: [
+      { cod: '001', nombre: 'Área de Prueba 1', updatedBy: 'Sistema' },
+      { cod: '002', nombre: 'Área de Prueba 2', updatedBy: 'Sistema' },
+      { cod: '003', nombre: 'Área de Prueba 3', updatedBy: 'Sistema' },
+      { cod: '004', nombre: 'Área de Prueba 4', updatedBy: 'Sistema' },
+      { cod: '005', nombre: 'Área de Prueba 5', updatedBy: 'Sistema' }
+    ]
+  };
+
+  try {
+    const docRef = await addDoc(collection(db, "monthly_reports"), testData);
+    console.log('✅ Reporte de prueba guardado:', docRef.id);
+    window.Swal.fire('Éxito', 'Reporte de prueba generado', 'success');
+  } catch (error) {
+    console.error('❌ Error:', error);
+  }
+};
+
+
 
   // Para reporte historico
   const toggleHistoricalReports = () => {
@@ -196,10 +249,28 @@ export default function App() {
         <ResetButton onReset={vaciarTodo} />
         <ExportButton onExport={exportToExcel} />
 
-        {/* ← NUEVO BOTÓN (reemplaza lo comentado) */}
+        {/* ← NUEVO BOTÓN Ver Histórico */}
         <button className="historical-btn" onClick={toggleHistoricalReports}>
           <i className="fas fa-history"></i>
           {showHistoricalReports ? 'Volver al Listado' : 'Ver Histórico'}
+        </button>
+
+
+        {// En los controles, agrega este botón temporal para generar reporte de prueba
+        }
+        <button
+          onClick={() => generateTestReport()}
+          style={{
+            background: '#8b5cf6',
+            color: 'white',
+            padding: '10px 16px',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '0.9rem'
+          }}
+        >
+          <i className="fas fa-vial"></i> Generar Reporte Test
         </button>
       </div>
 
