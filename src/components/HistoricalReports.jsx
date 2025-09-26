@@ -13,7 +13,6 @@ const HistoricalReports = () => {
 
   const loadHistoricalReports = async () => {
     try {
-      console.log('🔍 Cargando reportes históricos...');
       const querySnapshot = await getDocs(
         query(collection(db, "monthly_reports"), orderBy("timestamp", "desc"))
       );
@@ -24,11 +23,10 @@ const HistoricalReports = () => {
         timestamp: doc.data().timestamp?.toDate ? doc.data().timestamp.toDate() : new Date()
       }));
       
-      console.log('📊 Reports loaded:', reportsData);
       setReports(reportsData);
       setLoading(false);
     } catch (error) {
-      console.error('❌ Error cargando reportes históricos:', error);
+      console.error('Error cargando reportes históricos:', error);
       setLoading(false);
     }
   };
@@ -59,9 +57,6 @@ const HistoricalReports = () => {
     ? reports.find(report => report.month === selectedMonth)
     : (reports.length > 0 ? reports[0] : null);
 
-  console.log('📅 Unique months:', uniqueMonths);
-  console.log('🎯 Selected report:', selectedReport);
-
   return (
     <div style={{
       background: 'white',
@@ -81,7 +76,6 @@ const HistoricalReports = () => {
         📊 Reportes Históricos - Áreas sin Partes Recibidos
       </h3>
 
-      {/* Selector de Mes */}
       {uniqueMonths.length > 0 ? (
         <div style={{ marginBottom: '25px' }}>
           <label style={{
@@ -129,8 +123,7 @@ const HistoricalReports = () => {
         </div>
       )}
 
-      {/* Información del Mes Seleccionado */}
-      {selectedReport ? (
+      {selectedReport && (
         <div>
           <div style={{
             background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
@@ -151,7 +144,7 @@ const HistoricalReports = () => {
               </div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>
-                  {selectedReport.recibidos || selectedReport.enviados || 0}
+                  {selectedReport.recibidos || 0}
                 </div>
                 <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>Partes Recibidos</div>
               </div>
@@ -164,7 +157,6 @@ const HistoricalReports = () => {
             </div>
           </div>
 
-          {/* Lista de Áreas sin Recepción */}
           <div>
             <h5 style={{ margin: '0 0 15px 0', color: '#374151' }}>
               Áreas que NO enviaron partes ({selectedReport.areasPendientes?.length || 0}):
@@ -220,19 +212,8 @@ const HistoricalReports = () => {
             )}
           </div>
         </div>
-      ) : uniqueMonths.length > 0 ? (
-        <div style={{ 
-          background: '#f3f4f6', 
-          padding: '20px', 
-          borderRadius: '8px',
-          textAlign: 'center',
-          color: '#6b7280'
-        }}>
-          Selecciona un mes para ver el reporte.
-        </div>
-      ) : null}
+      )}
 
-      {/* Información adicional */}
       <div style={{ 
         marginTop: '20px', 
         padding: '15px',
@@ -243,7 +224,6 @@ const HistoricalReports = () => {
         border: '1px solid #e2e8f0'
       }}>
         <strong>💡 Información:</strong> Los reportes se generan automáticamente al exportar a Excel.
-        Cada mes se guarda un histórico de las áreas que no recibieron partes.
       </div>
     </div>
   );
